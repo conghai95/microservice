@@ -1,0 +1,10 @@
+#spring:
+#  application:
+#    name: auth-service
+#  profiles:
+#    active: development
+#  cloud:
+#    config:
+#      uri: http://localhost:8888
+#      fail-fast: true
+#      password: 123456

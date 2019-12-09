@@ -1,0 +1,27 @@
+version: "3"
+services:
+  mysqldb:
+    image: mysql:8
+    restart: always
+    networks:
+      - account-service-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=account_service_db
+    ports: 
+      - "3305:3306"
+  account-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: account-service
+    restart: always
+    ports:
+      - "8081:8081"
+    networks:
+      - account-service-mysql
+    depends_on:
+      - mysqldb
+
+networks:
+  account-service-mysql:

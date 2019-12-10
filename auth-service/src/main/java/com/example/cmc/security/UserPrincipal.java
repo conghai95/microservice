@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 //Spring Security will use the information stored in the UserPrincipal object to perform authentication and authorization
 public class UserPrincipal implements UserDetails {
 
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
 
 	private String name;

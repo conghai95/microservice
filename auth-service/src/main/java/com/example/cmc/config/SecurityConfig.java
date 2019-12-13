@@ -14,7 +14,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import com.example.cmc.controller.LogoutHandler;
 import com.example.cmc.security.JwtAuthenticationEntryPoint;
 import com.example.cmc.security.JwtAuthenticationFilter;
 import com.example.cmc.service.CustomUserDetailsService;
@@ -37,6 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {  
         return new JwtAuthenticationFilter();
+    }
+    
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return new LogoutHandler();
     }
 
     @Override
@@ -67,7 +74,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
         	.authorizeRequests()
-        		.antMatchers("/api/users/*").permitAll();
+        		.antMatchers("/api/users/signin", "/api/users/tokenShare").permitAll()
+        		.and()
+        	.authorizeRequests()
+        		.anyRequest().hasRole("USER")
+        		.and()
+        	.logout()
+                .logoutUrl("/logout").permitAll()
+                .deleteCookies("SessionId")
+                .logoutSuccessHandler(logoutSuccessHandler());
         
      // Add our custom JWT security filter
      http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

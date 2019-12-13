@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -18,35 +19,25 @@ public class AccountServiceImpl implements AccountService {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	AccountRepository repository;
-
+	AccountRepository accountRepository;
+	
 	@Override
-	public Account findByName(String accountName) {
-		return repository.findByUserName(accountName);
-	}
+	public Account createAccount(User user) {
 
-	@Override
-	public Account createUser(User user) {
-
-		Account account = new Account();
-		account.setId(user.getId());
+		Account account = new Account();  
 		account.setUserName(user.getUsername());
 		account.setCreateDate(new Date());
 
-		repository.save(account);
+		accountRepository.save(account);
 		log.info("new account has been created: " + account.getUserName());
 		return account;
 	}
 
 	@Override
-	public void editUser(String name, Account update) {
-
-		Account account = repository.findByUserName(name);
-
-		account.setCreateDate(new Date());
-		repository.save(account);
-
-		log.debug("account {} changes has been saved", name);
+	public List<Account> getAccounts() {
+		return accountRepository.findAll();
 	}
+	
+	
 
 }

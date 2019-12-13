@@ -2,6 +2,7 @@ version: "3"
 services:
   mysqldb:
     image: mysql:8
+    restart: always
     networks:
       - mysql-service
     environment:
@@ -9,36 +10,24 @@ services:
       - MYSQL_DATABASE=auth_service_db
     ports: 
       - "3305:3306"
-      
-  config:
-    build:
-      context: .
-      dockerfile: config/Dockerfile
-    image: config
-    ports:
-      - "8888:8888"
-    networks:
-      - mysql-service
-    depends_on:
-      - mysqldb
-
   account-service:
     build:
       context: .
       dockerfile: account-service/Dockerfile
     image: account-service
+    restart: always
     ports:
       - "8081:8081"
     networks:
       - mysql-service
     depends_on:
       - mysqldb
-      
   auth-service:
     build:
       context: .
       dockerfile: auth-service/Dockerfile
     image: auth-service
+    restart: always
     ports:
       - "8080:8080"
     networks:

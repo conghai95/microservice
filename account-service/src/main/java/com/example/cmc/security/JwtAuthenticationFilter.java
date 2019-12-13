@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.example.cmc.service.CustomUserDetailsService;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	
@@ -34,15 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	    try {
 	        String jwt = getJwtFromRequest(request);
 	
-	        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-	            Long userId = tokenProvider.getUserIdFromJWT(jwt);
-	
-	            UserDetails userDetails = customUserDetailsService.loadUserById(userId);
+	        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {	
+	            UserDetails userDetails = customUserDetailsService.loadUserAuth();
 	            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 	            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 	
 	            SecurityContextHolder.getContext().setAuthentication(authentication);
-	            System.out.println("content: " + SecurityContextHolder.getContext());
 	        }
 	    } catch (Exception ex) {
 	        logger.error("Could not set user authentication in security context", ex);

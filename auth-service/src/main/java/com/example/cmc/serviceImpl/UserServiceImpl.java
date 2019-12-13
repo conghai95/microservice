@@ -15,21 +15,31 @@ public class UserServiceImpl implements UserService {
 
 
 	@Autowired
-	private UserRepository repository;
+	private UserRepository userRepository;
 	
 	@Autowired
 	private AccountServiceClient accountServiceClient;
 
 	@Override
-	public void createUser(User user) {
+	public User createUser(User user) {
 		System.out.println("user auth: " + user);
 		accountServiceClient.createUserAccount(user);
-		repository.save(user);
+		return userRepository.save(user);
 	}
 	
 	@Override
 	public List<User> getUsers() {
-		return repository.findAll();
+		return userRepository.findAll();
+	}
+
+	@Override
+	public Boolean existsByUsername(String username) {
+		return userRepository.existsByUsername(username);
+	}
+
+	@Override
+	public User findByUserName(String name) {
+		return userRepository.findByUsername(name);
 	}
 
 }
